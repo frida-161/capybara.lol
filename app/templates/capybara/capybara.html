@@ -1,0 +1,13 @@
+{% extends "capybara/layout.html" %}
+
+{% block content %}
+<h1 class="display-5">capybara.lol</h1>
+your daily dose of capybara since 2021
+<hr/>
+{% if capy %}
+<img src="{{ url_for('capybara.files', filename=capy.filename) }}" class="img-fluid" alt="todays capybara">
+uploaded by <i>{{capy.user.name}}</i>
+{% else %}
+no capybara today :/
+{% endif %}
+{% endblock %}

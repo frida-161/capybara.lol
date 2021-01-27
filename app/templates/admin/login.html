@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+        <form method="post" enctype="multipart/form-data">
+          <div class="form-group" style="margin-bottom: 10px">
+            <label for="username">user</label>
+            <input type="text" name="username" class="form-control" aria-describedby="usernameHelp">
+            <label for="password">password</label>
+            <input type="password" name="password" class="form-control" aria-describedby="passwordHelp">
+          </div>
+          <button type="submit" class="btn btn-dark">login</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  capybara.lol:
+    build: .
+    container_name: capybara.lol
+    restart: always
+    ports:
+      - 4567:4567

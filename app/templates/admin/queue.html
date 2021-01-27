@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+  There are {{queue|length}} capybaras in the queue.
+  {% for capy in queue %}
+  <div class="card" style="margin-top: 10px">
+    <img src="{{ url_for('capybara.files', filename=capy.filename) }}" class="card-img-top">
+    <div class="card-body">
+          {{capy.date}} by {{capy.user.name}}
+    </div>
+  </div>
+  {% endfor %}
+{% endblock %}
