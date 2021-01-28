@@ -110,7 +110,8 @@ def add_user():
 @login_required
 def edit_user(user_id):
     """Edit a given user."""
-    if not current_user.superuser:
+    if not current_user.superuser and\
+        user_id != current_user.id:
         return abort(401)
     else:
         user = db.session.query(User).filter_by(id=user_id).first()
@@ -128,7 +129,9 @@ def edit_user(user_id):
                 current_app.logger.info(
                     'USER_PASSWORD_CHANGED: changed password for %s by %s'
                     % (user.name, current_user.name))
-            if request.form.get('superuser') and not user.superuser:
+            if request.form.get('superuser') \
+                and not user.superuser \
+                and user_id != current_user.id:
                 user.superuser = True
                 changed = True
                 current_app.logger.info(
@@ -145,7 +148,10 @@ def edit_user(user_id):
                 db.session.add(user)
                 db.session.commit()
                 flash("successfuly changed user: %s" % user.name)
-                return redirect(url_for('.get_users'))
+                if current_user.superuser:
+                    return redirect(url_for('.get_users'))
+                else:
+                    return redirect(url_for('.queue'))
             else:
                 flash("nothing changed")
                 return redirect(url_for('.edit_user', user_id=user_id))
@@ -159,13 +165,13 @@ def delete_user(user_id):
     """Delete a given user."""
     if not current_user.superuser:
         return abort(401)
+    elif user_id == current_user.id:
+        flash("can't delete yourself")
+        return redirect(url_for('.get_users'))
     else:
         user = db.session.query(User).filter_by(id=user_id).first()
         if not user:
             return abort(404)
-        if user.id == current_user.id:
-            flash("can't delete yourself")
-            return redirect(url_for('.get_users'))
         capybaras = db.session.query(Capybara).filter_by(user_id=user.id).all()
         for c in capybaras:
             c.user_id = current_user.id
