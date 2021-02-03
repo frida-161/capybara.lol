@@ -5,8 +5,22 @@
 your daily dose of capybara since 2021
 <hr/>
 {% if capy %}
-<img src="{{ url_for('capybara.files', filename=capy.filename) }}" class="img-fluid" alt="todays capybara">
-uploaded by <i>{{capy.user.name}}</i>
+<figure class="figure">
+<img src="{{ url_for('capybara.files', filename=capy.filename) }}" class="img-fluid rounded mx-auto d-block" alt="todays capybara">
+<figcaption class="figure-caption text-end">
+uploaded by <i>{{capy.user.name}}</i></span>
+</figcaption>
+</figure>
+<div class="btn-group" role="group">
+<a class="btn btn-light" href="{{ url_for('.vote', category='funny') }}">
+<span class="badge bg-dark">{{capy.funny_votes}}</span>
+😂
+</a>
+<a class="btn btn-light" href="{{ url_for('.vote', category='cute') }}">
+<span class="badge bg-dark">{{capy.cute_votes}}</span>
+😍
+</a>
+</div>
 {% else %}
 no capybara today :/
 {% endif %}

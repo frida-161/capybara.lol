@@ -26,8 +26,8 @@ class Capybara(Base):
     filename = Column(String(), nullable=False)
     user_id = Column(Integer(), ForeignKey('users.id'), nullable=False)
     user = relationship('User', back_populates='capybaras')
-    cute_votes = Column(Integer())
-    funny_votes = Column(Integer())
+    cute_votes = Column(Integer(), default=0)
+    funny_votes = Column(Integer(), default=0)
 
 
 class User(UserMixin, Base):
