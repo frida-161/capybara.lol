@@ -5,8 +5,8 @@
 your daily dose of capybara since 2021
 <hr/>
 {% if capy %}
-<figure class="figure">
-<img src="{{ url_for('capybara.files', filename=capy.filename) }}" class="img-fluid rounded mx-auto d-block" alt="todays capybara">
+<figure class="text-center">
+<img src="{{ url_for('capybara.files', filename=capy.filename) }}" class="img-fluid rounded d-block mx-auto" alt="todays capybara">
 <figcaption class="figure-caption text-end">
 uploaded by <i>{{capy.user.name}}</i></span>
 </figcaption>
