@@ -10,6 +10,7 @@ from flask import (
     make_response,
     request,
     flash,
+    abort,
     render_template,
     send_from_directory,
     Blueprint)
@@ -31,6 +32,21 @@ def lol():
         return render_template('capybara.html', capy=capy)
     else:
         return render_template('capybara.html')
+
+
+@capybara.route('/today')
+def today():
+    today = datetime.now().date()
+    capy = db.session.query(Capybara)\
+        .filter_by(date=today).first()
+    if capy:
+        return send_from_directory(
+            app.config['CAPYBARA_PATH'],
+            capy.filename
+        )
+    else:
+        return abort(404)
+
 
 @capybara.route('/capybaras/<path:filename>')
 def files(filename):
