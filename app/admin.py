@@ -201,6 +201,7 @@ def upload():
 
         if not file.filename.endswith('.png') and\
             not file.filename.endswith('.jpg') and\
+            not file.filename.endswith('.gif') and\
             not file.filename.endswith('.jpeg'):
             flash('wrong filetype')
             return redirect(url_for('.upload'))
