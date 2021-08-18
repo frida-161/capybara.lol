@@ -16,10 +16,12 @@ from flask import (
 from datetime import datetime, timedelta
 from werkzeug.urls import url_parse
 from sqlalchemy import desc
-import os.path
+from pathlib import Path
+import hashlib
+
 
 from app.models import User, Capybara
-from app.helpers import generate_filename
+from app.helpers import generate_filename, md5
 from app import login_manager, db, app
 
 admin = Blueprint('admin', __name__, template_folder='templates/admin')
@@ -206,13 +208,29 @@ def upload():
             flash('wrong filetype')
             return redirect(url_for('.upload'))
 
+        capy_path = Path(app.config['CAPYBARA_PATH'])
+        file_content = file.read()
+        hash  = hashlib.md5(file_content).hexdigest() 
+        hash_path = capy_path / 'hashes.md5'
 
+        # check for duplicates
+        with open(hash_path, 'r') as hash_file:
+            hashes = [h.strip() for h in hash_file.readlines()]
+            app.logger.info(hash)
+            app.logger.info(hashes)
+            if hash in hashes:
+                flash('this ain\'t copybara.lol')
+                return redirect(url_for('.upload'))
+
+        # save capybara
         filename = generate_filename(file.filename)
-        file_path = os.path.join(
-            app.config['CAPYBARA_PATH'],
-            filename
-        )
-        file.save(file_path)
+        file_path = capy_path / Path(filename)
+        with open(file_path, 'wb') as out_file:
+            out_file.write(file_content)
+
+        # append hash
+        with open(hash_path, 'a') as hash_file:
+            hash_file.write('\n{}'.format(hash))
 
         today = datetime.now().date()
 
