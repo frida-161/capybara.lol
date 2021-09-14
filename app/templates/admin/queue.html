@@ -6,6 +6,7 @@
     <img src="{{ url_for('capybara.files', filename=capy.filename) }}" class="card-img-top">
     <div class="card-body">
           {{capy.date}} by {{capy.user.name}}
+          <a href="{{ url_for('admin.delete_capy', capy_id=capy.id) }}">delete</a>
     </div>
   </div>
   {% endfor %}

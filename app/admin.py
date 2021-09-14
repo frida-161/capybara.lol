@@ -21,7 +21,7 @@ import hashlib
 
 
 from app.models import User, Capybara
-from app.helpers import generate_filename, md5
+from app.helpers import generate_filename, update_hashes
 from app import login_manager, db, app
 
 admin = Blueprint('admin', __name__, template_folder='templates/admin')
@@ -243,8 +243,6 @@ def upload():
         else:
             new_date = today
 
-        print(new_date)
-
         capy = Capybara(
             date=new_date,
             filename=filename,
@@ -257,6 +255,33 @@ def upload():
     else:
         return render_template('upload.html')
     
+
+@admin.route('/capy/<int:capy_id>/delete')
+@login_required
+def delete_capy(capy_id):
+    if not current_user.superuser:
+        abort(401)
+    else:
+        capy = db.session.query(Capybara).filter_by(id=capy_id).first()
+        if capy:
+            today = datetime.now().date()
+            if capy.date < today:
+                flash('can\'t delete old capys')
+                return redirect(url_for('.queue'))
+            later_capys = db.session.query(Capybara)\
+                .filter(Capybara.date > capy.date)\
+                .all()
+            db.session.delete(capy)
+            for c in later_capys:
+                c.date = c.date - timedelta(days=1)
+            db.session.commit()
+            capy_path = Path(app.config['CAPYBARA_PATH']) / Path(capy.filename)
+            capy_path.unlink()
+            update_hashes()
+        else:
+            abort(404)
+    return redirect(url_for('.queue'))
+
 
 @admin.route('/')
 @login_required

@@ -28,6 +28,8 @@ from app.admin import admin
 app.register_blueprint(admin, url_prefix='/admin')
 from app.capybara import capybara
 app.register_blueprint(capybara, url_prefix='/')
+from app.api import api
+app.register_blueprint(api, url_prefix='/api')
 
 from app.models import User, Capybara, Base
 Base.metadata.create_all(db.engine)
