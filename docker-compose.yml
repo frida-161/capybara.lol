@@ -8,7 +8,11 @@ services:
     ports:
       - 4567:4567
     volumes:
-      - ./upload:/upload
-      - ./db:/db
+      - capy-upload:/upload
+      - capy-db:/db
     environment:
       - SQLALCHEMY_DATABASE_URI=sqlite:////db/capybara.lol
+
+volumes:
+  capy-db:
+  capy-upload:

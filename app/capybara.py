@@ -17,11 +17,12 @@ from flask import (
 from datetime import datetime
 import random
 
-from app import db, app
+from app import db, app, metrics
 from app.models import Capybara
 
 capybara = Blueprint(
     'capybara', __name__, template_folder='templates/capybara')
+
 
 @capybara.route('/')
 def lol():
@@ -70,7 +71,7 @@ def vote(category):
                 if capy.cute_votes:
                     capy.cute_votes += 1
                 else:
-                     capy.cute_votes = 1
+                    capy.cute_votes = 1
                 db.session.add(capy)
                 db.session.commit()
 
