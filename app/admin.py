@@ -204,6 +204,7 @@ def upload():
         if not file.filename.endswith('.png') and\
             not file.filename.endswith('.jpg') and\
             not file.filename.endswith('.gif') and\
+            not file.filename.endswith('.webp') and\
             not file.filename.endswith('.jpeg'):
             flash('wrong filetype')
             return redirect(url_for('.upload'))
@@ -214,13 +215,14 @@ def upload():
         hash_path = capy_path / 'hashes.md5'
 
         # check for duplicates
-        with open(hash_path, 'r') as hash_file:
-            hashes = [h.strip() for h in hash_file.readlines()]
-            app.logger.info(hash)
-            app.logger.info(hashes)
-            if hash in hashes:
-                flash('this ain\'t copybara.lol')
-                return redirect(url_for('.upload'))
+        if hash_path.exists():
+            with open(hash_path, 'r') as hash_file:
+                hashes = [h.strip() for h in hash_file.readlines()]
+                app.logger.info(hash)
+                app.logger.info(hashes)
+                if hash in hashes:
+                    flash('this ain\'t copybara.lol')
+                    return redirect(url_for('.upload'))
 
         # save capybara
         filename = generate_filename(file.filename)
